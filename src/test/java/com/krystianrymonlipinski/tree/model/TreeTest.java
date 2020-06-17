@@ -126,7 +126,7 @@ public abstract class TreeTest<T, U> {
 		Node<T, U> node3A = testObj.addNode(node2B, createFirstCondition());
 
 		ArrayList<ArrayList<Node<T, U>>> branches = testObj.organizeNodesInBranches();
-
+		assertEquals(6, branches.size());
 
 	}
 
