@@ -47,7 +47,7 @@ public abstract class TreeTest<T, U> {
 	}
 
 	@Test
-	public void moveDown() throws Exception {
+	public void moveDown_fromNodeWithChildren() throws Exception {
 		Node<T, U> newNode = testObj.addNode(testObj.getRoot(), createFirstCondition());
 		testObj.moveDown(createFirstCondition());
 		assertEquals(newNode, testObj.getCurrentNode());
@@ -55,7 +55,7 @@ public abstract class TreeTest<T, U> {
 	}
 
 	@Test(expected = NodeWithNoChildrenException.class)
-	public void moveDown_fromRootWithNoChildren() throws NodeWithNoChildrenException {
+	public void moveDown_fromNodeWithNoChildren() throws NodeWithNoChildrenException {
 		testObj.moveDown(createFirstCondition());
 	}
 
@@ -132,7 +132,25 @@ public abstract class TreeTest<T, U> {
 
 	@Test
 	public void setNewNodeAsRoot() {
+		Node<T, U> node1A = testObj.addNode(testObj.getCurrentNode(), createFirstCondition());
+		Node<T, U> node1B = testObj.addNode(testObj.getCurrentNode(), createSecondCondition());
+		Node<T, U> node1C = testObj.addNode(testObj.getCurrentNode(), createThirdCondition());
+		Node<T, U> node2A = testObj.addNode(node1A, createFirstCondition());
+		Node<T, U> node2B = testObj.addNode(node1A, createSecondCondition());
+		Node<T, U> node2C = testObj.addNode(node1B, createFirstCondition());
+		Node<T, U> node2D = testObj.addNode(node1B, createSecondCondition());
+		Node<T, U> node2E = testObj.addNode(node1C, createFirstCondition());
+		Node<T, U> node2F = testObj.addNode(node1C, createSecondCondition());
+		Node<T, U> node2G = testObj.addNode(node1C, createThirdCondition());
 
+		testObj.setNewNodeAsRoot(node1B);
+		assertEquals(3, testObj.getNodes().size());
+		assertEquals(node1B, testObj.getRoot());
+		assertEquals(node1B, testObj.getCurrentNode());
+		testObj.setNewNodeAsRoot(node2C);
+		assertEquals(1, testObj.getNodes().size());
+		assertEquals(node2C, testObj.getRoot());
+		assertEquals(node2C, testObj.getCurrentNode());
 	}
 	
 	

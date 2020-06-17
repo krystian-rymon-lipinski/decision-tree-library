@@ -92,7 +92,6 @@ public class Tree<T, U> {
 	public ArrayList<ArrayList<Node<T, U>>> organizeNodesInBranches() {
 		ArrayList<ArrayList<Node<T, U>>> branches = new ArrayList<>();
 		ArrayList<Node<T, U>> lowestNodes = new ArrayList<>();
-		int maxNodeLevel = 0;
 		for(Node<T, U> node : nodes) {
 			if(node.getChildren().size() == 0) {
 				lowestNodes.add(node);
@@ -108,5 +107,18 @@ public class Tree<T, U> {
 		}
 
 		return branches;	
+	}
+	
+	public void setNewNodeAsRoot(Node<T, U> node) {
+		if (node.getAncestor() != null) {
+			for (Node<T, U> child : node.getAncestor().getChildren()) {
+				if (child != node) removeNode(child);
+			}
+			nodes.remove(node.getAncestor());
+			root = node;
+			currentNode = node;
+
+
+		}
 	}
 }
