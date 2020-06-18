@@ -64,6 +64,10 @@ public class Tree<T, U> {
 		if(currentNode.getLevel() != 0) currentNode = currentNode.getAncestor();
 		else throw new NoAncestorForRootNodeException("Chosen node is root and has no ancestor");
 	}
+	
+	public void moveToNode(Node<T, U> node) {
+		currentNode = node;
+	}
 
 	public void removeNode(Node<T, U> node) {	
 		if (node.getChildren().size() > 0) {

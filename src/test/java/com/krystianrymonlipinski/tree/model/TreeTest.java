@@ -153,6 +153,18 @@ public abstract class TreeTest<T, U> {
 		assertEquals(node2C, testObj.getCurrentNode());
 	}
 	
+	@Test
+	public void moveToNode() {
+		Node<T, U> node1A = testObj.addNode(testObj.getCurrentNode(), createFirstCondition());
+		Node<T, U> node2A = testObj.addNode(node1A, createFirstCondition());
+		Node<T, U> node3A = testObj.addNode(node2A, createFirstCondition());
+
+		testObj.moveToNode(node3A);
+		assertEquals(node3A, testObj.getCurrentNode());
+
+
+	}
+	
 	
 	
 }
