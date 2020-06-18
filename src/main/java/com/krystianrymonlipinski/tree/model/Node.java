@@ -5,12 +5,12 @@ import java.util.List;
 
 public class Node<T, U> {
 
-	private int index;
-	private T state;
-	private U condition;
-	private Node<T, U> ancestor;
-	private List<Node<T, U>> children = new ArrayList<>();
-	private int level;
+	protected int index;
+	protected T state;
+	protected U condition;
+	protected Node<T, U> ancestor;
+	protected List<Node<T, U>> children = new ArrayList<>();
+	protected int level;
 
 	public Node(Node<T, U> ancestor, U condition) {
 		this.index = Tree.currentIndex++;

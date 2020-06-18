@@ -6,10 +6,10 @@ import com.krystianrymonlipinski.exceptions.*;
 
 public class Tree<T, U> {
 
-	static int currentIndex = 0;
-	List<Node<T, U>> nodes;
-	Node<T, U> root;
-	Node<T, U> currentNode;
+	protected static int currentIndex = 0;
+	protected List<Node<T, U>> nodes;
+	protected Node<T, U> root;
+	protected Node<T, U> currentNode;
 	
 	public Tree(Node<T, U> root) {
 		this.nodes = new ArrayList<>();
