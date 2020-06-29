@@ -65,7 +65,8 @@ public class Node<T, U> {
 		this.children.add(child);
 	}
 	
-	enum Type {
+	public enum Type {
 		ROOT_NODE;
 	}
+
 }
