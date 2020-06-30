@@ -49,6 +49,10 @@ public class Tree<T, U> {
 		return newNode;
 	}
 
+	public void addNode(Node<T, U> node) {
+		nodes.add(node);
+	}
+
 	public void moveDown(U condition) throws NodeWithNoChildrenException {
 		for(Node<T, U> node : currentNode.getChildren()) {
 			if(node.getCondition() == condition) {
