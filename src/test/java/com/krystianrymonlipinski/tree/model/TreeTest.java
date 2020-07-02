@@ -66,9 +66,11 @@ public abstract class TreeTest<T, U> {
 
 	@Test
 	public void moveUp_fromNonRoot() throws Exception {
-		testObj.addNode(testObj.getRoot(), createFirstCondition());
+		Node<T, U> child = testObj.addNode(testObj.getRoot(), createFirstCondition());
 		testObj.moveDown(createFirstCondition());
-		testObj.moveUp();
+		Node<T, U> previousNode = testObj.moveUp();
+
+		assertEquals(child.getIndex(), previousNode.getIndex());
 		assertEquals(testObj.getRoot(), testObj.getCurrentNode());
 		assertEquals(0, testObj.getCurrentNode().getLevel());
 	}

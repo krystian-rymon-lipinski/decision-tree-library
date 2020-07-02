@@ -64,8 +64,12 @@ public class Tree<T, U> {
 		throw new NodeWithNoChildrenException("Chosen node has no children to move down");
 	}
 
-	public void moveUp() throws NoAncestorForRootNodeException {
-		if(currentNode.getLevel() != 0) currentNode = currentNode.getAncestor();
+	public Node<T, U> moveUp() throws NoAncestorForRootNodeException {
+		Node<T, U> previousNode = currentNode;
+		if(currentNode.getLevel() != 0) {
+			currentNode = currentNode.getAncestor();
+			return previousNode;
+		}
 		else throw new NoAncestorForRootNodeException("Chosen node is root and has no ancestor");
 	}
 	
