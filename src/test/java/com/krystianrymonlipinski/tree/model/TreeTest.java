@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
 
+import com.krystianrymonlipinski.exceptions.NodeConditionNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -55,8 +56,14 @@ public abstract class TreeTest<T, U> {
 	}
 
 	@Test(expected = NodeWithNoChildrenException.class)
-	public void moveDown_fromNodeWithNoChildren() throws NodeWithNoChildrenException {
+	public void moveDown_fromNodeWithNoChildren() throws NodeWithNoChildrenException, NodeConditionNotFoundException {
 		testObj.moveDown(createFirstCondition());
+	}
+
+	@Test(expected = NodeConditionNotFoundException.class)
+	public void moveDown_wrongConditionProvided() throws NodeWithNoChildrenException, NodeConditionNotFoundException {
+		Node<T, U> newNode = testObj.addNode(testObj.getRoot(), createFirstCondition());
+		testObj.moveDown(createSecondCondition());
 	}
 
 	@Test(expected = NoAncestorForRootNodeException.class)

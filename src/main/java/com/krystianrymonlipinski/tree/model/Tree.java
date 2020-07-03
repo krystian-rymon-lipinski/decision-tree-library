@@ -53,15 +53,20 @@ public class Tree<T, U> {
 		nodes.add(node);
 	}
 
-	public void moveDown(U condition) throws NodeWithNoChildrenException {
-		for(Node<T, U> node : currentNode.getChildren()) {
-			if(node.getCondition() == condition) {
-				currentNode = node;
-				return;
+	public void moveDown(U condition) throws NodeWithNoChildrenException, NodeConditionNotFoundException {
+		if (currentNode.getChildren().size() == 0) {
+			throw new NodeWithNoChildrenException("Chosen node has no children to move down");
+		}
+		else {
+			for(Node<T, U> node : currentNode.getChildren()) {
+				if(node.getCondition().equals(condition)) {
+					currentNode = node;
+					return;
+				}
 			}
 		}
 
-		throw new NodeWithNoChildrenException("Chosen node has no children to move down");
+		throw new NodeConditionNotFoundException("No node with such condition");
 	}
 
 	public Node<T, U> moveUp() throws NoAncestorForRootNodeException {
