@@ -126,16 +126,18 @@ public class Tree<T, U> {
 		return branches;	
 	}
 	
-	public void setNewNodeAsRoot(Node<T, U> node) {
+	public void setChildAsNewRoot(Node<T, U> node) {
 		if (node.getAncestor() != null) {
 			for (Node<T, U> child : node.getAncestor().getChildren()) {
-				if (child != node) removeNode(child);
+				if (!child.equals(node)) removeNode(child);
 			}
 			nodes.remove(node.getAncestor());
 			root = node;
 			currentNode = node;
 
-
+			for (Node<T, U> everyNode : nodes) {
+				everyNode.level -= node.level;
+			}
 		}
 	}
 }

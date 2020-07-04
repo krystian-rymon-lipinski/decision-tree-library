@@ -152,14 +152,17 @@ public abstract class TreeTest<T, U> {
 		Node<T, U> node2F = testObj.addNode(node1C, createSecondCondition());
 		Node<T, U> node2G = testObj.addNode(node1C, createThirdCondition());
 
-		testObj.setNewNodeAsRoot(node1B);
+		testObj.setChildAsNewRoot(node1B);
 		assertEquals(3, testObj.getNodes().size());
 		assertEquals(node1B, testObj.getRoot());
 		assertEquals(node1B, testObj.getCurrentNode());
-		testObj.setNewNodeAsRoot(node2C);
+		assertEquals(0, testObj.getCurrentNode().getLevel());
+
+		testObj.setChildAsNewRoot(node2C);
 		assertEquals(1, testObj.getNodes().size());
 		assertEquals(node2C, testObj.getRoot());
 		assertEquals(node2C, testObj.getCurrentNode());
+		assertEquals(0, testObj.getCurrentNode().getLevel());
 	}
 	
 	@Test
