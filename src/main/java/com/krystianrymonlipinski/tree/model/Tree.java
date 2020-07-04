@@ -100,10 +100,9 @@ public class Tree<T, U> {
 			root = null;
 		}
 		else {
-			currentNode = node.getAncestor();
+			if (node.equals(currentNode)) currentNode = node.getAncestor();
 		}
 		nodes.remove(node);
-		currentIndex--;
 	}
 	
 	public ArrayList<ArrayList<Node<T, U>>> organizeNodesInBranches() {
@@ -132,11 +131,14 @@ public class Tree<T, U> {
 				if (!child.equals(node)) removeNode(child);
 			}
 			nodes.remove(node.getAncestor());
+			node.setAncestor(null);
+			node.setCondition(null);
 			root = node;
 			currentNode = node;
 
+			int newRootCurrentLevel = node.level;
 			for (Node<T, U> everyNode : nodes) {
-				everyNode.level -= node.level;
+				everyNode.level -= newRootCurrentLevel;
 			}
 		}
 	}

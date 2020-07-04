@@ -1,8 +1,5 @@
 package com.krystianrymonlipinski.tree.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
 import java.util.ArrayList;
 
 import com.krystianrymonlipinski.exceptions.NodeConditionNotFoundException;
@@ -12,6 +9,8 @@ import org.mockito.Mockito;
 
 import com.krystianrymonlipinski.exceptions.NoAncestorForRootNodeException;
 import com.krystianrymonlipinski.exceptions.NodeWithNoChildrenException;
+
+import static org.junit.Assert.*;
 
 public abstract class TreeTest<T, U> {
 
@@ -87,19 +86,17 @@ public abstract class TreeTest<T, U> {
 		Node<T, U> newNode = testObj.addNode(testObj.getRoot(), createFirstCondition());
 		testObj.removeNode(newNode);
 		assertEquals(1, testObj.getNodes().size());
-		assertEquals(1, Tree.currentIndex);
 		assertEquals(0, testObj.getCurrentNode().getLevel());
 	}
 
 	@Test
-	public void removeNode_nonRoot_withChilden() {
+	public void removeNode_nonRoot_withChildren() {
 		Node<T, U> newNode = testObj.addNode(testObj.getRoot(), createFirstCondition());
 		testObj.addNode(newNode, createSecondCondition());
 		testObj.addNode(newNode, createThirdCondition());
 		testObj.removeNode(newNode);
-		
+
 		assertEquals(1, testObj.getNodes().size());
-		assertEquals(1, Tree.currentIndex);
 		assertEquals(0, testObj.getCurrentNode().getLevel());
 	}
 	
@@ -108,7 +105,7 @@ public abstract class TreeTest<T, U> {
 		testObj.removeNode(testObj.getRoot());
 		assertNull(testObj.getRoot());
 		assertNull(testObj.getCurrentNode());
-		assertEquals(0, Tree.currentIndex);
+		assertEquals(0, testObj.getNodes().size());
 	}
 
 	@Test
@@ -118,7 +115,7 @@ public abstract class TreeTest<T, U> {
 		testObj.removeNode(testObj.getRoot());
 		assertNull(testObj.getRoot());
 		assertNull(testObj.getCurrentNode());
-		assertEquals(0, Tree.currentIndex);
+		assertEquals(0, testObj.getNodes().size());
 	}
 
 	@Test
@@ -150,19 +147,26 @@ public abstract class TreeTest<T, U> {
 		Node<T, U> node2D = testObj.addNode(node1B, createSecondCondition());
 		Node<T, U> node2E = testObj.addNode(node1C, createFirstCondition());
 		Node<T, U> node2F = testObj.addNode(node1C, createSecondCondition());
-		Node<T, U> node2G = testObj.addNode(node1C, createThirdCondition());
 
 		testObj.setChildAsNewRoot(node1B);
+
 		assertEquals(3, testObj.getNodes().size());
 		assertEquals(node1B, testObj.getRoot());
 		assertEquals(node1B, testObj.getCurrentNode());
 		assertEquals(0, testObj.getCurrentNode().getLevel());
+		assertNull(testObj.getCurrentNode().getAncestor());
+		assertNull(testObj.getCurrentNode().getCondition());
+		assertEquals(1, node2C.getLevel());
+		assertEquals(1, node2D.getLevel());
 
-		testObj.setChildAsNewRoot(node2C);
-		assertEquals(1, testObj.getNodes().size());
-		assertEquals(node2C, testObj.getRoot());
-		assertEquals(node2C, testObj.getCurrentNode());
-		assertEquals(0, testObj.getCurrentNode().getLevel());
+		assertFalse(testObj.nodes.contains(node1A));
+		assertFalse(testObj.nodes.contains(node1C));
+		assertFalse(testObj.nodes.contains(node2A));
+		assertFalse(testObj.nodes.contains(node2B));
+		assertFalse(testObj.nodes.contains(node2E));
+		assertFalse(testObj.nodes.contains(node2F));
+
+
 	}
 	
 	@Test
