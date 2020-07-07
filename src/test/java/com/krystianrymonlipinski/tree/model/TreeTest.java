@@ -177,8 +177,23 @@ public abstract class TreeTest<T, U> {
 
 		testObj.moveToNode(node3A);
 		assertEquals(node3A, testObj.getCurrentNode());
+	}
 
+	@Test
+	public void returnToRoot() throws Exception {
+		Node<T, U> node1A = testObj.addNode(testObj.getCurrentNode(), createFirstCondition());
+		Node<T, U> node2A = testObj.addNode(node1A, createFirstCondition());
+		Node<T, U> node3A = testObj.addNode(node2A, createFirstCondition());
 
+		testObj.moveDown(createFirstCondition());
+		testObj.moveDown(createFirstCondition());
+		testObj.moveDown(createFirstCondition());
+
+		assertEquals(node3A, testObj.getCurrentNode());
+
+		testObj.returnToRoot();
+
+		assertEquals(testObj.getRoot(), testObj.getCurrentNode());
 	}
 	
 	

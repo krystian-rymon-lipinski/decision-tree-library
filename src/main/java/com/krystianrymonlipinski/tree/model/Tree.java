@@ -142,4 +142,14 @@ public class Tree<T, U> {
 			}
 		}
 	}
+
+	public void returnToRoot() {
+		while (!currentNode.equals(root)) {
+			try {
+				moveUp();
+			} catch (NoAncestorForRootNodeException ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
 }
