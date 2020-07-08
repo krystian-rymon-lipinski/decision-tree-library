@@ -53,19 +53,28 @@ public class Tree<T, U> {
 		nodes.add(node);
 	}
 
-	public void moveDown(U condition) throws NodeWithNoChildrenException {
-		for(Node<T, U> node : currentNode.getChildren()) {
-			if(node.getCondition() == condition) {
-				currentNode = node;
-				return;
+	public void moveDown(U condition) throws NodeWithNoChildrenException, NodeConditionNotFoundException {
+		if (currentNode.getChildren().size() == 0) {
+			throw new NodeWithNoChildrenException("Chosen node has no children to move down");
+		}
+		else {
+			for(Node<T, U> node : currentNode.getChildren()) {
+				if(node.getCondition().equals(condition)) {
+					currentNode = node;
+					return;
+				}
 			}
 		}
 
-		throw new NodeWithNoChildrenException("Chosen node has no children to move down");
+		throw new NodeConditionNotFoundException("No node with such condition");
 	}
 
-	public void moveUp() throws NoAncestorForRootNodeException {
-		if(currentNode.getLevel() != 0) currentNode = currentNode.getAncestor();
+	public Node<T, U> moveUp() throws NoAncestorForRootNodeException {
+		Node<T, U> previousNode = currentNode;
+		if(currentNode.getLevel() != 0) {
+			currentNode = currentNode.getAncestor();
+			return previousNode;
+		}
 		else throw new NoAncestorForRootNodeException("Chosen node is root and has no ancestor");
 	}
 	
@@ -91,10 +100,9 @@ public class Tree<T, U> {
 			root = null;
 		}
 		else {
-			currentNode = node.getAncestor();
+			if (node.equals(currentNode)) currentNode = node.getAncestor();
 		}
 		nodes.remove(node);
-		currentIndex--;
 	}
 	
 	public ArrayList<ArrayList<Node<T, U>>> organizeNodesInBranches() {
@@ -117,16 +125,31 @@ public class Tree<T, U> {
 		return branches;	
 	}
 	
-	public void setNewNodeAsRoot(Node<T, U> node) {
+	public void setChildAsNewRoot(Node<T, U> node) {
 		if (node.getAncestor() != null) {
 			for (Node<T, U> child : node.getAncestor().getChildren()) {
-				if (child != node) removeNode(child);
+				if (!child.equals(node)) removeNode(child);
 			}
 			nodes.remove(node.getAncestor());
+			node.setAncestor(null);
+			node.setCondition(null);
 			root = node;
 			currentNode = node;
 
+			int newRootCurrentLevel = node.level;
+			for (Node<T, U> everyNode : nodes) {
+				everyNode.level -= newRootCurrentLevel;
+			}
+		}
+	}
 
+	public void returnToRoot() {
+		while (!currentNode.equals(root)) {
+			try {
+				moveUp();
+			} catch (NoAncestorForRootNodeException ex) {
+				ex.printStackTrace();
+			}
 		}
 	}
 }

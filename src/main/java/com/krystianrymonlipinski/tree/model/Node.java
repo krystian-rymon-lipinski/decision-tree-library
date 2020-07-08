@@ -2,6 +2,7 @@ package com.krystianrymonlipinski.tree.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Node<T, U> {
 
@@ -69,4 +70,16 @@ public class Node<T, U> {
 		ROOT_NODE;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Node<?, ?> node = (Node<?, ?>) o;
+		return index == node.index;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(index);
+	}
 }
