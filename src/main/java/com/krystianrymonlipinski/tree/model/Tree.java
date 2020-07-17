@@ -130,6 +130,14 @@ public class Tree<T, U> {
 			for (Node<T, U> child : node.getAncestor().getChildren()) {
 				if (!child.equals(node)) removeNode(child);
 			}
+			try {
+				moveDown(node.getCondition());
+			} catch (NodeWithNoChildrenException e) {
+				e.printStackTrace();
+			} catch (NodeConditionNotFoundException e) {
+				e.printStackTrace();
+			}
+
 			nodes.remove(node.getAncestor());
 			node.setAncestor(null);
 			node.setCondition(null);
