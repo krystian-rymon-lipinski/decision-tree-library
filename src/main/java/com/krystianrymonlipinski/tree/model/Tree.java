@@ -125,29 +125,23 @@ public class Tree<T, U> {
 		return branches;	
 	}
 	
-	public void setChildAsNewRoot(Node<T, U> node) {
-		if (node.getAncestor() != null) {
-			for (Node<T, U> child : node.getAncestor().getChildren()) {
-				if (!child.equals(node)) removeNode(child);
+	public void moveDownAndSetChildAsNewRoot(U condition) {
+		try {
+			moveDown(condition);
+			for (Node<T, U> child : currentNode.getAncestor().getChildren()) {
+				if (!child.getCondition().equals(condition)) removeNode(child);
 			}
-			try {
-				moveDown(node.getCondition());
-			} catch (NodeWithNoChildrenException e) {
-				e.printStackTrace();
-			} catch (NodeConditionNotFoundException e) {
-				e.printStackTrace();
-			}
+			nodes.remove(currentNode.getAncestor());
+			currentNode.setAncestor(null);
+			currentNode.setCondition(null);
+			root = currentNode;
 
-			nodes.remove(node.getAncestor());
-			node.setAncestor(null);
-			node.setCondition(null);
-			root = node;
-			currentNode = node;
-
-			int newRootCurrentLevel = node.level;
+			int newRootCurrentLevel = currentNode.level;
 			for (Node<T, U> everyNode : nodes) {
 				everyNode.level -= newRootCurrentLevel;
 			}
+		} catch (NodeWithNoChildrenException | NodeConditionNotFoundException e) {
+			e.printStackTrace();
 		}
 	}
 

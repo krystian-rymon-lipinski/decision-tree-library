@@ -137,7 +137,7 @@ public abstract class TreeTest<T, U> {
 	}
 
 	@Test (expected = NoAncestorForRootNodeException.class)
-	public void setNewNodeAsRoot() throws NoAncestorForRootNodeException {
+	public void moveDownAndSetNewNodeAsRoot() throws NoAncestorForRootNodeException {
 		Node<T, U> node1A = testObj.addNode(testObj.getCurrentNode(), createFirstCondition());
 		Node<T, U> node1B = testObj.addNode(testObj.getCurrentNode(), createSecondCondition());
 		Node<T, U> node1C = testObj.addNode(testObj.getCurrentNode(), createThirdCondition());
@@ -148,7 +148,7 @@ public abstract class TreeTest<T, U> {
 		Node<T, U> node2E = testObj.addNode(node1C, createFirstCondition());
 		Node<T, U> node2F = testObj.addNode(node1C, createSecondCondition());
 
-		testObj.setChildAsNewRoot(node1B);
+		testObj.moveDownAndSetChildAsNewRoot(node1B.getCondition());
 
 		assertEquals(3, testObj.getNodes().size());
 		assertEquals(node1B, testObj.getRoot());
