@@ -1,7 +1,7 @@
 package com.krystianrymonlipinski.tree.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
 import com.krystianrymonlipinski.exceptions.*;
 
 public class Tree<T, U> {
@@ -82,19 +82,38 @@ public class Tree<T, U> {
 		currentNode = node;
 	}
 
-	public void removeNode(Node<T, U> node) {	
+	public void removeNodeWithItsChildren(Node<T, U> node) {
+		System.out.println(nodes);
 		if (node.getChildren().size() > 0) {
-			for(Node<T, U> child : node.getChildren()) {
-				removeNode(child);
+			ListIterator<Node<T, U>> nodesIterator = node.getChildren().listIterator();
+			while (nodesIterator.hasNext()) {
+				removeNodeWithItsChildren(nodesIterator.next());
+				nodesIterator.remove();
 			}
 			doRemoval(node);
+			removeItselfFromParentsChildren(node);
 		}
 		else {
 			doRemoval(node);
 		}
+
+
+	}
+
+	public void removeItselfFromParentsChildren(Node<T, U> node) {
+		if (!node.equals(root)) {
+			ListIterator<Node<T, U>> nodesIterator = node.getAncestor().getChildren().listIterator();
+			while (nodesIterator.hasNext()) {
+				if (nodesIterator.next().equals(node)) {
+					nodesIterator.remove();
+					break;
+				}
+			}
+		}
 	}
 
 	private void doRemoval(Node<T, U> node) {
+		System.out.println("Do removal of node: " + node);
 		if (node.getLevel() == 0) {
 			currentNode = null;
 			root = null;
@@ -129,7 +148,7 @@ public class Tree<T, U> {
 		try {
 			moveDown(condition);
 			for (Node<T, U> child : currentNode.getAncestor().getChildren()) {
-				if (!child.getCondition().equals(condition)) removeNode(child);
+				if (!child.getCondition().equals(condition)) removeNodeWithItsChildren(child);
 			}
 			nodes.remove(currentNode.getAncestor());
 			currentNode.setAncestor(null);

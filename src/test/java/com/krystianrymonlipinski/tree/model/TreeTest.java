@@ -81,38 +81,52 @@ public abstract class TreeTest<T, U> {
 		assertEquals(0, testObj.getCurrentNode().getLevel());
 	}
 
+	@Test
+	public void removeItselfFromParentsChildren() {
+		testObj.addNode(testObj.getRoot(), createFirstCondition());
+		testObj.addNode(testObj.getRoot(), createSecondCondition());
+		Node<T, U> nodeToRemove = testObj.addNode(testObj.getRoot(), createThirdCondition());
+
+		assertEquals(3, testObj.getRoot().getChildren().size());
+
+		testObj.removeItselfFromParentsChildren(nodeToRemove);
+
+		assertEquals(2, testObj.getRoot().getChildren().size());
+	}
+
 	@Test 
-	public void removeNode_nonRoot_withoutChildren() {
+	public void removeNodeWithItsChildren_nonRoot_childrenNonExisting() {
 		Node<T, U> newNode = testObj.addNode(testObj.getRoot(), createFirstCondition());
-		testObj.removeNode(newNode);
+		testObj.removeNodeWithItsChildren(newNode);
 		assertEquals(1, testObj.getNodes().size());
 		assertEquals(0, testObj.getCurrentNode().getLevel());
 	}
 
 	@Test
-	public void removeNode_nonRoot_withChildren() {
+	public void removeNodeWithItsChildren_nonRoot_childrenExisting() {
 		Node<T, U> newNode = testObj.addNode(testObj.getRoot(), createFirstCondition());
 		testObj.addNode(newNode, createSecondCondition());
 		testObj.addNode(newNode, createThirdCondition());
-		testObj.removeNode(newNode);
+		testObj.removeNodeWithItsChildren(newNode);
 
 		assertEquals(1, testObj.getNodes().size());
 		assertEquals(0, testObj.getCurrentNode().getLevel());
+		assertTrue(testObj.getCurrentNode().getChildren().isEmpty());
 	}
 	
 	@Test
-	public void removeNode_root_withoutChildren() {
-		testObj.removeNode(testObj.getRoot());
+	public void removeNodeWithItsChildren_root_childrenNonExisting() {
+		testObj.removeNodeWithItsChildren(testObj.getRoot());
 		assertNull(testObj.getRoot());
 		assertNull(testObj.getCurrentNode());
 		assertEquals(0, testObj.getNodes().size());
 	}
 
 	@Test
-	public void removeNode_root_withChildren() {
+	public void removeNodeWithItsChildren_root_childrenExisting() {
 		testObj.addNode(testObj.getCurrentNode(), createFirstCondition());
 		testObj.addNode(testObj.getCurrentNode(), createSecondCondition());
-		testObj.removeNode(testObj.getRoot());
+		testObj.removeNodeWithItsChildren(testObj.getRoot());
 		assertNull(testObj.getRoot());
 		assertNull(testObj.getCurrentNode());
 		assertEquals(0, testObj.getNodes().size());
