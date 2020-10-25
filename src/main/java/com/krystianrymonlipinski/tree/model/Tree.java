@@ -82,18 +82,18 @@ public class Tree<T, U> {
 		currentNode = node;
 	}
 
-	public void removeNodeAndItsChildren(Node<T, U> node) {
-		removeNodeChildren(node);
+	public void removeNodeAndItsChildren(Node<T, U> node, boolean evenIfRoot) {
+		removeNodeChildren(node, evenIfRoot);
 		removeNodeFromItsParentChildren(node);
 	}
 
-	public void removeNodeChildren(Node<T, U> node) {
+	public void removeNodeChildren(Node<T, U> node, boolean evenIfRoot) {
 		ListIterator<Node<T, U>> nodesIterator = node.getChildren().listIterator();
 		while (nodesIterator.hasNext()) {
-			removeNodeChildren(nodesIterator.next());
+			removeNodeChildren(nodesIterator.next(), evenIfRoot);
 			nodesIterator.remove();
 		}
-		doRemoval(node);
+		if (!node.equals(root) || evenIfRoot) doRemoval(node);
 	}
 
 	public void removeNodeFromItsParentChildren(Node<T, U> node) {
@@ -109,15 +109,15 @@ public class Tree<T, U> {
 	}
 
 	private void doRemoval(Node<T, U> node) {
-		System.out.println("Do removal of node: " + node);
 		if (node.equals(root)) {
 			root = null;
+		}
+		if (node.equals(currentNode)) {
 			currentNode = null;
 		}
-		else if (node.equals(currentNode)) {
-			currentNode = node.getAncestor();
-		}
 		nodes.remove(node);
+		node.setCondition(null);
+		node.setState(null);
 	}
 	
 	public ArrayList<ArrayList<Node<T, U>>> organizeNodesInBranches() {
@@ -139,12 +139,45 @@ public class Tree<T, U> {
 
 		return branches;	
 	}
+
+	public void setCurrentNodeAsRoot() {
+		Node<T, U> startingPoint = currentNode;
+
+		while (!currentNode.equals(root)) {
+			Node<T, U> childToSpare = null;
+			try {
+				childToSpare = moveUp();
+			} catch (NoAncestorForRootNodeException ex) {
+				ex.printStackTrace();
+			}
+
+			ArrayList<Node<T,U>> childrenToRemove = new ArrayList<>();
+			for (Node<T, U> child : currentNode.getChildren()) {
+				if (!child.equals(childToSpare)) childrenToRemove.add(child);
+			}
+			for (Node<T, U> child : childrenToRemove) {
+				removeNodeAndItsChildren(child, false);
+			}
+		}
+
+		while (!currentNode.equals(startingPoint)) {
+			try {
+				moveDown(currentNode.getChildren().get(0).getCondition());
+				doRemoval(currentNode.getAncestor());
+				currentNode.setAncestor(null);
+			} catch (NodeWithNoChildrenException | NodeConditionNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		root = currentNode;
+	}
+
 	
 	public void moveDownAndSetChildAsNewRoot(U condition) {
 		try {
 			moveDown(condition);
 			for (Node<T, U> child : currentNode.getAncestor().getChildren()) {
-				if (!child.getCondition().equals(condition)) removeNodeAndItsChildren(child);
+				if (!child.getCondition().equals(condition)) removeNodeAndItsChildren(child, false);
 			}
 			nodes.remove(currentNode.getAncestor());
 			currentNode.setAncestor(null);
