@@ -82,14 +82,14 @@ public abstract class TreeTest<T, U> {
 	}
 
 	@Test
-	public void removeItselfFromParentsChildren() {
+	public void removeNodeFromItsParentChildren() {
 		testObj.addNode(testObj.getRoot(), createFirstCondition());
 		testObj.addNode(testObj.getRoot(), createSecondCondition());
 		Node<T, U> nodeToRemove = testObj.addNode(testObj.getRoot(), createThirdCondition());
 
 		assertEquals(3, testObj.getRoot().getChildren().size());
 
-		testObj.removeItselfFromParentsChildren(nodeToRemove);
+		testObj.removeNodeFromItsParentChildren(nodeToRemove);
 
 		assertEquals(2, testObj.getRoot().getChildren().size());
 	}

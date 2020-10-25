@@ -83,45 +83,38 @@ public class Tree<T, U> {
 	}
 
 	public void removeNodeWithItsChildren(Node<T, U> node) {
-		System.out.println(nodes);
-		if (node.getChildren().size() > 0) {
-			ListIterator<Node<T, U>> nodesIterator = node.getChildren().listIterator();
-			while (nodesIterator.hasNext()) {
-				removeNodeWithItsChildren(nodesIterator.next());
-				nodesIterator.remove();
-			}
-			doRemoval(node);
-			removeItselfFromParentsChildren(node);
+		ListIterator<Node<T, U>> nodesIterator = node.getChildren().listIterator();
+		while (nodesIterator.hasNext()) {
+			removeNodeWithItsChildren(nodesIterator.next());
+			nodesIterator.remove();
 		}
-		else {
-			doRemoval(node);
-		}
-
-
+		doRemoval(node);
 	}
 
-	public void removeItselfFromParentsChildren(Node<T, U> node) {
+	public void removeNodeFromItsParentChildren(Node<T, U> node) {
 		if (!node.equals(root)) {
-			ListIterator<Node<T, U>> nodesIterator = node.getAncestor().getChildren().listIterator();
-			while (nodesIterator.hasNext()) {
-				if (nodesIterator.next().equals(node)) {
-					nodesIterator.remove();
+			Node<T, U> childToRemove = null;
+			for (Node<T, U> child : node.getAncestor().getChildren()) {
+				if (child.equals(node)) {
+					childToRemove = child;
 					break;
 				}
 			}
+			node.getAncestor().getChildren().remove(childToRemove);
 		}
 	}
 
 	private void doRemoval(Node<T, U> node) {
 		System.out.println("Do removal of node: " + node);
-		if (node.getLevel() == 0) {
-			currentNode = null;
+		if (node.equals(root)) {
 			root = null;
+			currentNode = null;
 		}
-		else {
-			if (node.equals(currentNode)) currentNode = node.getAncestor();
+		else if (node.equals(currentNode)) {
+			currentNode = node.getAncestor();
 		}
 		nodes.remove(node);
+		//removeNodeFromItsParentChildren(node);
 	}
 	
 	public ArrayList<ArrayList<Node<T, U>>> organizeNodesInBranches() {
