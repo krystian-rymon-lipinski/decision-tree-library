@@ -1,6 +1,7 @@
 package com.krystianrymonlipinski.tree.model;
 
 import java.util.ArrayList;
+import java.util.ListIterator;
 
 import com.krystianrymonlipinski.exceptions.NodeConditionNotFoundException;
 import org.junit.Before;
@@ -97,9 +98,10 @@ public abstract class TreeTest<T, U> {
 	@Test 
 	public void removeNodeWithItsChildren_nonRoot_childrenNonExisting() {
 		Node<T, U> newNode = testObj.addNode(testObj.getRoot(), createFirstCondition());
-		testObj.removeNodeWithItsChildren(newNode);
+		testObj.removeNodeAndItsChildren(newNode);
 		assertEquals(1, testObj.getNodes().size());
 		assertEquals(0, testObj.getCurrentNode().getLevel());
+		assertTrue(testObj.getCurrentNode().getChildren().isEmpty());
 	}
 
 	@Test
@@ -107,7 +109,7 @@ public abstract class TreeTest<T, U> {
 		Node<T, U> newNode = testObj.addNode(testObj.getRoot(), createFirstCondition());
 		testObj.addNode(newNode, createSecondCondition());
 		testObj.addNode(newNode, createThirdCondition());
-		testObj.removeNodeWithItsChildren(newNode);
+		testObj.removeNodeAndItsChildren(newNode);
 
 		assertEquals(1, testObj.getNodes().size());
 		assertEquals(0, testObj.getCurrentNode().getLevel());
@@ -116,7 +118,7 @@ public abstract class TreeTest<T, U> {
 	
 	@Test
 	public void removeNodeWithItsChildren_root_childrenNonExisting() {
-		testObj.removeNodeWithItsChildren(testObj.getRoot());
+		testObj.removeNodeAndItsChildren(testObj.getRoot());
 		assertNull(testObj.getRoot());
 		assertNull(testObj.getCurrentNode());
 		assertEquals(0, testObj.getNodes().size());
@@ -126,7 +128,7 @@ public abstract class TreeTest<T, U> {
 	public void removeNodeWithItsChildren_root_childrenExisting() {
 		testObj.addNode(testObj.getCurrentNode(), createFirstCondition());
 		testObj.addNode(testObj.getCurrentNode(), createSecondCondition());
-		testObj.removeNodeWithItsChildren(testObj.getRoot());
+		testObj.removeNodeAndItsChildren(testObj.getRoot());
 		assertNull(testObj.getRoot());
 		assertNull(testObj.getCurrentNode());
 		assertEquals(0, testObj.getNodes().size());

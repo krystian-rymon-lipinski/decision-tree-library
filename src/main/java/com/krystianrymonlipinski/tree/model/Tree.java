@@ -82,25 +82,29 @@ public class Tree<T, U> {
 		currentNode = node;
 	}
 
-	public void removeNodeWithItsChildren(Node<T, U> node) {
+	public void removeNodeAndItsChildren(Node<T, U> node) {
+		removeNodeChildren(node);
+		removeNodeFromItsParentChildren(node);
+	}
+
+	public void removeNodeChildren(Node<T, U> node) {
 		ListIterator<Node<T, U>> nodesIterator = node.getChildren().listIterator();
 		while (nodesIterator.hasNext()) {
-			removeNodeWithItsChildren(nodesIterator.next());
+			removeNodeChildren(nodesIterator.next());
 			nodesIterator.remove();
 		}
 		doRemoval(node);
 	}
 
 	public void removeNodeFromItsParentChildren(Node<T, U> node) {
-		if (!node.equals(root)) {
-			Node<T, U> childToRemove = null;
-			for (Node<T, U> child : node.getAncestor().getChildren()) {
-				if (child.equals(node)) {
-					childToRemove = child;
+		if (node.getAncestor() != null) {
+			ListIterator<Node<T, U>> nodesIterator = node.getAncestor().getChildren().listIterator();
+			while (nodesIterator.hasNext()) {
+				if (nodesIterator.next().equals(node)) {
+					nodesIterator.remove();
 					break;
 				}
 			}
-			node.getAncestor().getChildren().remove(childToRemove);
 		}
 	}
 
@@ -114,7 +118,6 @@ public class Tree<T, U> {
 			currentNode = node.getAncestor();
 		}
 		nodes.remove(node);
-		//removeNodeFromItsParentChildren(node);
 	}
 	
 	public ArrayList<ArrayList<Node<T, U>>> organizeNodesInBranches() {
@@ -141,7 +144,7 @@ public class Tree<T, U> {
 		try {
 			moveDown(condition);
 			for (Node<T, U> child : currentNode.getAncestor().getChildren()) {
-				if (!child.getCondition().equals(condition)) removeNodeWithItsChildren(child);
+				if (!child.getCondition().equals(condition)) removeNodeAndItsChildren(child);
 			}
 			nodes.remove(currentNode.getAncestor());
 			currentNode.setAncestor(null);
