@@ -170,6 +170,10 @@ public class Tree<T, U> {
 			}
 		}
 		root = currentNode;
+		int newRootCurrentLevel = root.getLevel();
+		for (Node<T, U> everyNode : nodes) {
+			everyNode.level -= newRootCurrentLevel;
+		}
 	}
 
 	

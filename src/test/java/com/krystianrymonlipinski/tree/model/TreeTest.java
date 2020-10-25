@@ -158,6 +158,7 @@ public abstract class TreeTest<T, U> {
 		assertEquals(3, testObj.getNodes().size());
 		assertEquals(node2B, testObj.getRoot());
 		assertEquals(node2B, testObj.getCurrentNode());
+		assertEquals(0, node2B.getLevel());
 
 	}
 
