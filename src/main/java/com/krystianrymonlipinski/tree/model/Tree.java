@@ -1,7 +1,7 @@
 package com.krystianrymonlipinski.tree.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
 import com.krystianrymonlipinski.exceptions.*;
 
 public class Tree<T, U> {
@@ -82,27 +82,42 @@ public class Tree<T, U> {
 		currentNode = node;
 	}
 
-	public void removeNode(Node<T, U> node) {	
-		if (node.getChildren().size() > 0) {
-			for(Node<T, U> child : node.getChildren()) {
-				removeNode(child);
-			}
-			doRemoval(node);
+	public void removeNodeAndItsChildren(Node<T, U> node, boolean evenIfRoot) {
+		removeNodeChildren(node, evenIfRoot);
+		removeNodeFromItsParentChildren(node);
+	}
+
+	public void removeNodeChildren(Node<T, U> node, boolean evenIfRoot) {
+		ListIterator<Node<T, U>> nodesIterator = node.getChildren().listIterator();
+		while (nodesIterator.hasNext()) {
+			removeNodeChildren(nodesIterator.next(), evenIfRoot);
+			nodesIterator.remove();
 		}
-		else {
-			doRemoval(node);
+		if (!node.equals(root) || evenIfRoot) doRemoval(node);
+	}
+
+	public void removeNodeFromItsParentChildren(Node<T, U> node) {
+		if (node.getAncestor() != null) {
+			ListIterator<Node<T, U>> nodesIterator = node.getAncestor().getChildren().listIterator();
+			while (nodesIterator.hasNext()) {
+				if (nodesIterator.next().equals(node)) {
+					nodesIterator.remove();
+					break;
+				}
+			}
 		}
 	}
 
 	private void doRemoval(Node<T, U> node) {
-		if (node.getLevel() == 0) {
-			currentNode = null;
+		if (node.equals(root)) {
 			root = null;
 		}
-		else {
-			if (node.equals(currentNode)) currentNode = node.getAncestor();
+		if (node.equals(currentNode)) {
+			currentNode = null;
 		}
 		nodes.remove(node);
+		node.setCondition(null);
+		node.setState(null);
 	}
 	
 	public ArrayList<ArrayList<Node<T, U>>> organizeNodesInBranches() {
@@ -124,12 +139,49 @@ public class Tree<T, U> {
 
 		return branches;	
 	}
+
+	public void setCurrentNodeAsRoot() {
+		Node<T, U> startingPoint = currentNode;
+
+		while (!currentNode.equals(root)) {
+			Node<T, U> childToSpare = null;
+			try {
+				childToSpare = moveUp();
+			} catch (NoAncestorForRootNodeException ex) {
+				ex.printStackTrace();
+			}
+
+			ArrayList<Node<T,U>> childrenToRemove = new ArrayList<>();
+			for (Node<T, U> child : currentNode.getChildren()) {
+				if (!child.equals(childToSpare)) childrenToRemove.add(child);
+			}
+			for (Node<T, U> child : childrenToRemove) {
+				removeNodeAndItsChildren(child, false);
+			}
+		}
+
+		while (!currentNode.equals(startingPoint)) {
+			try {
+				moveDown(currentNode.getChildren().get(0).getCondition());
+				doRemoval(currentNode.getAncestor());
+				currentNode.setAncestor(null);
+			} catch (NodeWithNoChildrenException | NodeConditionNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		root = currentNode;
+		int newRootCurrentLevel = root.getLevel();
+		for (Node<T, U> everyNode : nodes) {
+			everyNode.level -= newRootCurrentLevel;
+		}
+	}
+
 	
 	public void moveDownAndSetChildAsNewRoot(U condition) {
 		try {
 			moveDown(condition);
 			for (Node<T, U> child : currentNode.getAncestor().getChildren()) {
-				if (!child.getCondition().equals(condition)) removeNode(child);
+				if (!child.getCondition().equals(condition)) removeNodeAndItsChildren(child, false);
 			}
 			nodes.remove(currentNode.getAncestor());
 			currentNode.setAncestor(null);

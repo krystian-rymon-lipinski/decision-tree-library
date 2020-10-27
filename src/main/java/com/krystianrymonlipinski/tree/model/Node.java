@@ -70,6 +70,10 @@ public class Node<T, U> {
 		ROOT_NODE;
 	}
 
+	public String toString() {
+		return String.valueOf(index);
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;

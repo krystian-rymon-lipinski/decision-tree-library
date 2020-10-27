@@ -1,6 +1,7 @@
 package com.krystianrymonlipinski.tree.model;
 
 import java.util.ArrayList;
+import java.util.ListIterator;
 
 import com.krystianrymonlipinski.exceptions.NodeConditionNotFoundException;
 import org.junit.Before;
@@ -81,41 +82,84 @@ public abstract class TreeTest<T, U> {
 		assertEquals(0, testObj.getCurrentNode().getLevel());
 	}
 
+	@Test
+	public void removeNodeFromItsParentChildren() {
+		testObj.addNode(testObj.getRoot(), createFirstCondition());
+		testObj.addNode(testObj.getRoot(), createSecondCondition());
+		Node<T, U> nodeToRemove = testObj.addNode(testObj.getRoot(), createThirdCondition());
+
+		assertEquals(3, testObj.getRoot().getChildren().size());
+
+		testObj.removeNodeFromItsParentChildren(nodeToRemove);
+
+		assertEquals(2, testObj.getRoot().getChildren().size());
+	}
+
 	@Test 
-	public void removeNode_nonRoot_withoutChildren() {
+	public void removeNodeWithItsChildren_nonRoot_childrenNonExisting() {
 		Node<T, U> newNode = testObj.addNode(testObj.getRoot(), createFirstCondition());
-		testObj.removeNode(newNode);
+		testObj.removeNodeAndItsChildren(newNode, false);
 		assertEquals(1, testObj.getNodes().size());
 		assertEquals(0, testObj.getCurrentNode().getLevel());
+		assertTrue(testObj.getCurrentNode().getChildren().isEmpty());
 	}
 
 	@Test
-	public void removeNode_nonRoot_withChildren() {
+	public void removeNodeWithItsChildren_nonRoot_childrenExisting() {
 		Node<T, U> newNode = testObj.addNode(testObj.getRoot(), createFirstCondition());
 		testObj.addNode(newNode, createSecondCondition());
 		testObj.addNode(newNode, createThirdCondition());
-		testObj.removeNode(newNode);
+		testObj.removeNodeAndItsChildren(newNode, false);
 
 		assertEquals(1, testObj.getNodes().size());
 		assertEquals(0, testObj.getCurrentNode().getLevel());
+		assertTrue(testObj.getCurrentNode().getChildren().isEmpty());
 	}
 	
 	@Test
-	public void removeNode_root_withoutChildren() {
-		testObj.removeNode(testObj.getRoot());
+	public void removeNodeWithItsChildren_root_childrenNonExisting() {
+		testObj.removeNodeAndItsChildren(testObj.getRoot(), true);
 		assertNull(testObj.getRoot());
 		assertNull(testObj.getCurrentNode());
 		assertEquals(0, testObj.getNodes().size());
 	}
 
 	@Test
-	public void removeNode_root_withChildren() {
+	public void removeNodeWithItsChildren_root_childrenExisting() {
 		testObj.addNode(testObj.getCurrentNode(), createFirstCondition());
 		testObj.addNode(testObj.getCurrentNode(), createSecondCondition());
-		testObj.removeNode(testObj.getRoot());
+		testObj.removeNodeAndItsChildren(testObj.getRoot(), true);
 		assertNull(testObj.getRoot());
 		assertNull(testObj.getCurrentNode());
 		assertEquals(0, testObj.getNodes().size());
+	}
+
+	@Test
+	public void setCurrentNodeAsRoot() throws NodeWithNoChildrenException, NodeConditionNotFoundException {
+		Node<T, U> node1A = testObj.addNode(testObj.getCurrentNode(), createFirstCondition());
+		Node<T, U> node1B = testObj.addNode(testObj.getCurrentNode(), createSecondCondition());
+		Node<T, U> node2A = testObj.addNode(node1A, createFirstCondition());
+		Node<T, U> node2B = testObj.addNode(node1A, createSecondCondition());
+		Node<T, U> node2C = testObj.addNode(node1B, createFirstCondition());
+		Node<T, U> node3A = testObj.addNode(node2A, createFirstCondition());
+		Node<T, U> node3B = testObj.addNode(node2B, createFirstCondition());
+		Node<T, U> node3C = testObj.addNode(node2B, createSecondCondition());
+		Node<T, U> node3D = testObj.addNode(node2C, createFirstCondition());
+		Node<T, U> node3E = testObj.addNode(node2C, createSecondCondition());
+		Node<T, U> node3F = testObj.addNode(node2C, createThirdCondition());
+
+		testObj.moveDown(node1A.getCondition());
+		testObj.moveDown(node2B.getCondition());
+
+		assertEquals(node2B, testObj.getCurrentNode());
+
+		testObj.setCurrentNodeAsRoot();
+
+		assertEquals(3, testObj.getNodes().size());
+		assertEquals(node2B, testObj.getRoot());
+		assertEquals(node2B, testObj.getCurrentNode());
+		assertEquals(0, node2B.getLevel());
+
 	}
 
 	@Test
