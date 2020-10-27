@@ -176,27 +176,6 @@ public class Tree<T, U> {
 		}
 	}
 
-	
-	public void moveDownAndSetChildAsNewRoot(U condition) {
-		try {
-			moveDown(condition);
-			for (Node<T, U> child : currentNode.getAncestor().getChildren()) {
-				if (!child.getCondition().equals(condition)) removeNodeAndItsChildren(child, false);
-			}
-			nodes.remove(currentNode.getAncestor());
-			currentNode.setAncestor(null);
-			currentNode.setCondition(null);
-			root = currentNode;
-
-			int newRootCurrentLevel = currentNode.level;
-			for (Node<T, U> everyNode : nodes) {
-				everyNode.level -= newRootCurrentLevel;
-			}
-		} catch (NodeWithNoChildrenException | NodeConditionNotFoundException e) {
-			e.printStackTrace();
-		}
-	}
-
 	public void returnToRoot() {
 		while (!currentNode.equals(root)) {
 			try {

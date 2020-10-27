@@ -179,39 +179,6 @@ public abstract class TreeTest<T, U> {
 		assertEquals(6, branches.size());
 
 	}
-
-	@Test (expected = NoAncestorForRootNodeException.class)
-	public void moveDownAndSetNewNodeAsRoot() throws NoAncestorForRootNodeException {
-		Node<T, U> node1A = testObj.addNode(testObj.getCurrentNode(), createFirstCondition());
-		Node<T, U> node1B = testObj.addNode(testObj.getCurrentNode(), createSecondCondition());
-		Node<T, U> node1C = testObj.addNode(testObj.getCurrentNode(), createThirdCondition());
-		Node<T, U> node2A = testObj.addNode(node1A, createFirstCondition());
-		Node<T, U> node2B = testObj.addNode(node1A, createSecondCondition());
-		Node<T, U> node2C = testObj.addNode(node1B, createFirstCondition());
-		Node<T, U> node2D = testObj.addNode(node1B, createSecondCondition());
-		Node<T, U> node2E = testObj.addNode(node1C, createFirstCondition());
-		Node<T, U> node2F = testObj.addNode(node1C, createSecondCondition());
-
-		testObj.moveDownAndSetChildAsNewRoot(node1B.getCondition());
-
-		assertEquals(3, testObj.getNodes().size());
-		assertEquals(node1B, testObj.getRoot());
-		assertEquals(node1B, testObj.getCurrentNode());
-		assertEquals(0, testObj.getCurrentNode().getLevel());
-		assertNull(testObj.getCurrentNode().getAncestor());
-		assertNull(testObj.getCurrentNode().getCondition());
-		assertEquals(1, node2C.getLevel());
-		assertEquals(1, node2D.getLevel());
-
-		assertFalse(testObj.nodes.contains(node1A));
-		assertFalse(testObj.nodes.contains(node1C));
-		assertFalse(testObj.nodes.contains(node2A));
-		assertFalse(testObj.nodes.contains(node2B));
-		assertFalse(testObj.nodes.contains(node2E));
-		assertFalse(testObj.nodes.contains(node2F));
-
-		testObj.moveUp();
-	}
 	
 	@Test
 	public void moveToNode() {
