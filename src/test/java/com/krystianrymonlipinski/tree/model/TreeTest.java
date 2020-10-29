@@ -1,6 +1,5 @@
 package com.krystianrymonlipinski.tree.model;
 
-import java.util.ArrayList;
 import com.krystianrymonlipinski.exceptions.NodeConditionNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,14 +12,13 @@ import static org.junit.Assert.*;
 
 public abstract class TreeTest<T, U> {
 
-	Node<T, U> root; //po co to komu? w konstruktorze Tree i tak towrzony jest nowy <shrug>
-	//po co w ogóle type w konstruktorze, skoro i tak tworzony jest nowy obiekt?! <shrug>
+	Node<T, U> root;
 	Tree<T, U> testObj;
 	
 	@Before
 	public void setUp() {
 		Tree.currentIndex = 0;
-		root = new Node<T, U>(Node.Type.ROOT_NODE);
+		root = new Node<>();
 		Tree<T, U> tree = new Tree<>(root);
 		testObj = Mockito.spy(tree);
 	}

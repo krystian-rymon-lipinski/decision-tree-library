@@ -22,7 +22,7 @@ public class Node<T, U> {
 		else 				  this.level = ancestor.level+1 ;
 	}
 
-	public Node(Node.Type type) {
+	public Node() {
 		this(null, null);
 	}
 	
@@ -64,10 +64,6 @@ public class Node<T, U> {
 	}
 	public void addChild(Node<T, U> child) {
 		this.children.add(child);
-	}
-	
-	public enum Type {
-		ROOT_NODE;
 	}
 
 	public String toString() {
