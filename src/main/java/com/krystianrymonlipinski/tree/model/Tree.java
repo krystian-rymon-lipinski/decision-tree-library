@@ -7,23 +7,12 @@ import com.krystianrymonlipinski.exceptions.*;
 public class Tree<T, U> {
 
 	protected static int currentIndex = 0;
-	protected List<Node<T, U>> nodes;
 	protected Node<T, U> root;
 	protected Node<T, U> currentNode;
 	
 	public Tree(Node<T, U> root) {
-		this.nodes = new ArrayList<>();
-		this.nodes.add(root);
 		this.root = root;
 		this.currentNode = root;	
-	}
-
-	public List<Node<T, U>> getNodes() {
-		return nodes;
-	}
-
-	public void setNodes(List<Node<T, U>> nodes) {
-		this.nodes = nodes;
 	}
 
 	public Node<T, U> getRoot() {
@@ -43,14 +32,9 @@ public class Tree<T, U> {
 	}
 
 	public Node<T, U> addNode(Node<T, U> ancestor, U condition) {
-		Node<T, U> newNode = new Node<T, U>(ancestor, condition);
-		nodes.add(newNode);
+		Node<T, U> newNode = new Node<>(ancestor, condition);
 		ancestor.addChild(newNode);
 		return newNode;
-	}
-
-	public void addNode(Node<T, U> node) {
-		nodes.add(node);
 	}
 
 	public void moveDown(U condition) throws NodeWithNoChildrenException, NodeConditionNotFoundException {
@@ -115,11 +99,10 @@ public class Tree<T, U> {
 		if (node.equals(currentNode)) {
 			currentNode = null;
 		}
-		nodes.remove(node);
 		node.setCondition(null);
 		node.setState(null);
 	}
-	
+/*
 	public ArrayList<ArrayList<Node<T, U>>> organizeNodesInBranches() {
 		ArrayList<ArrayList<Node<T, U>>> branches = new ArrayList<>();
 		ArrayList<Node<T, U>> lowestNodes = new ArrayList<>();
@@ -139,7 +122,7 @@ public class Tree<T, U> {
 
 		return branches;	
 	}
-
+*/
 	public void setCurrentNodeAsRoot() {
 		Node<T, U> startingPoint = currentNode;
 
@@ -170,31 +153,6 @@ public class Tree<T, U> {
 			}
 		}
 		root = currentNode;
-		int newRootCurrentLevel = root.getLevel();
-		for (Node<T, U> everyNode : nodes) {
-			everyNode.level -= newRootCurrentLevel;
-		}
-	}
-
-	
-	public void moveDownAndSetChildAsNewRoot(U condition) {
-		try {
-			moveDown(condition);
-			for (Node<T, U> child : currentNode.getAncestor().getChildren()) {
-				if (!child.getCondition().equals(condition)) removeNodeAndItsChildren(child, false);
-			}
-			nodes.remove(currentNode.getAncestor());
-			currentNode.setAncestor(null);
-			currentNode.setCondition(null);
-			root = currentNode;
-
-			int newRootCurrentLevel = currentNode.level;
-			for (Node<T, U> everyNode : nodes) {
-				everyNode.level -= newRootCurrentLevel;
-			}
-		} catch (NodeWithNoChildrenException | NodeConditionNotFoundException e) {
-			e.printStackTrace();
-		}
 	}
 
 	public void returnToRoot() {
