@@ -38,7 +38,7 @@ public class Tree<T, U> {
 	}
 
 	public void moveDown(U condition) throws NodeWithNoChildrenException, NodeConditionNotFoundException {
-		if (currentNode.getChildren().size() == 0) {
+		if (currentNode.getChildren() == null || currentNode.getChildren().isEmpty()) {
 			throw new NodeWithNoChildrenException("Chosen node has no children to move down");
 		}
 		else {
