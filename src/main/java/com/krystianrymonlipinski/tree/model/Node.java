@@ -11,7 +11,7 @@ public class Node<T, U> {
 	protected U condition;
 	protected Node<T, U> ancestor;
 	protected List<Node<T, U>> children;
-	protected int level;
+	protected short level;
 
 	public Node(Node<T, U> ancestor, U condition) {
 		this.index = Tree.currentIndex++;
@@ -19,7 +19,7 @@ public class Node<T, U> {
 		this.condition = condition;	
 
 		if (ancestor == null) this.level = 0;
-		else 				  this.level = ancestor.level+1 ;
+		else 				  this.level = (short) (ancestor.level+1) ;
 	}
 
 	public Node() {
@@ -45,11 +45,11 @@ public class Node<T, U> {
 		this.condition = condition;
 	}
 
-	public int getLevel() {
+	public short getLevel() {
 		return level;
 	}
 
-	public void setLevel(int level) {
+	public void setLevel(short level) {
 		this.level = level;
 	}
 
