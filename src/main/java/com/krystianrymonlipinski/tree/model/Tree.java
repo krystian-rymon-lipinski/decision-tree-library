@@ -72,12 +72,14 @@ public class Tree<T, U> {
 	}
 
 	public void removeNodeChildren(Node<T, U> node, boolean evenIfRoot) {
-		ListIterator<Node<T, U>> nodesIterator = node.getChildren().listIterator();
-		while (nodesIterator.hasNext()) {
-			removeNodeChildren(nodesIterator.next(), evenIfRoot);
-			nodesIterator.remove();
+		if (node.getChildren() != null) {
+			ListIterator<Node<T, U>> nodesIterator = node.getChildren().listIterator();
+			while (nodesIterator.hasNext()) {
+				removeNodeChildren(nodesIterator.next(), evenIfRoot);
+				nodesIterator.remove();
+			}
+			if (!node.equals(root) || evenIfRoot) doRemoval(node);
 		}
-		if (!node.equals(root) || evenIfRoot) doRemoval(node);
 	}
 
 	public void removeNodeFromItsParentChildren(Node<T, U> node) {
