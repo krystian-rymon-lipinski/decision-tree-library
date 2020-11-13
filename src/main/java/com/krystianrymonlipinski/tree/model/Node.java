@@ -10,7 +10,7 @@ public class Node<T, U> {
 	protected T state;
 	protected U condition;
 	protected Node<T, U> ancestor;
-	protected List<Node<T, U>> children = new ArrayList<>();
+	protected List<Node<T, U>> children;
 	protected int level;
 
 	public Node(Node<T, U> ancestor, U condition) {
@@ -62,7 +62,11 @@ public class Node<T, U> {
 	public List<Node<T, U>> getChildren() {
 		return children;
 	}
+
 	public void addChild(Node<T, U> child) {
+		if (children == null) {
+			children = new ArrayList<>();
+		}
 		this.children.add(child);
 	}
 
